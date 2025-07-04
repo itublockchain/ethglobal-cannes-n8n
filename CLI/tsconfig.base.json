@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "lib": ["esnext"],
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "paths": {
+      "test-clack-cannes": ["./src/index.ts"]
+    }
+  },
+  "include": ["src", "types"],
+  "exclude": ["dist", "node_modules"]
+}

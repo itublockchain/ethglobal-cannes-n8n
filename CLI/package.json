@@ -1,0 +1,35 @@
+{
+  "name": "n8n-cli",
+  "type": "module",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "npx tsx src/index.ts",
+    "build": "npm run build:esm",
+    "build:esm": "tsc -p tsconfig.esm.json --resolveJsonModule false && npm run fix-esm-imports",
+    "fix-esm-imports": "npx esbuild ./src/index.ts --bundle --outfile=./dist/esm/index.js --platform=node --target=node18 --format=esm --external:node:child_process"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "ts-node": "^10.9.2"
+  },
+  "bin": {
+    "test-clack-cannes": "./dist/esm/index.js"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0"
+  }
+}
