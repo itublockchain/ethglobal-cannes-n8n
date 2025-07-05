@@ -38,8 +38,7 @@
     "nodes": [
       "dist/nodes/ViemTransaction.node.js",
       "dist/nodes/ViemContract.node.js",
-      "dist/nodes/ViemGetChain.node.js",
-      "dist/nodes/ViemDeployContract.node.js"
+      "dist/nodes/ViemGetChain.node.js"
     ]
   },
   "devDependencies": {

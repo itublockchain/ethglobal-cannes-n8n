@@ -37,7 +37,6 @@
     ],
     "nodes": [
       "dist/nodes/ViewWalletBalances.node.js",
-      "dist/nodes/NFTTransferTrigger.node.js",
       "dist/nodes/GetTokenHolders.node.js",
       "dist/nodes/GetLiquidityPools.node.js"
     ]
