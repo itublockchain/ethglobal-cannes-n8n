@@ -4,11 +4,10 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	NodeConnectionType,
-	NodeParameterValue,
 } from 'n8n-workflow';
 
 import { privateKeyToAccount } from 'viem/accounts';
-import { Abi, Chain, createPublicClient, createWalletClient, http } from 'viem';
+import { Abi, createPublicClient, createWalletClient, http } from 'viem';
 import * as chains from 'viem/chains';
 
 export class ViemContract implements INodeType {
@@ -39,10 +38,10 @@ export class ViemContract implements INodeType {
 		},
 		properties: [
 			{
-				displayName: 'Chain',
-				name: 'chain',
-				type: 'json',
-				default: chains.sepolia as unknown as NodeParameterValue,
+				displayName: 'Chain ID',
+				name: 'chainID',
+				type: 'number',
+				default: 11155111,
 			},
 			{
 				displayName: 'Contract Address',
@@ -94,7 +93,12 @@ export class ViemContract implements INodeType {
 
 			const functionName = this.getNodeParameter('functionName', i) as string;
 
-			const chain = this.getNodeParameter('chain', i) as Chain;
+			const chainID = this.getNodeParameter('chainID', i) as number;
+			const chain = Object.values(chains).find((chain) => chain.id === chainID);
+
+			if (!chain) {
+				throw new Error('Chain not found');
+			}
 
 			const publicClient = createPublicClient({
 				chain,
