@@ -30,12 +30,43 @@ export async function installNode(node: string) {
 
     await execAsync(`cd ${sourceDir} && npm install`);
 
-    await execAsync(`cd ${sourceDir} && npm link`);
-
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
     const packageName = packageJson.name;
 
-    await execAsync(`cd ${n8nCustomDir} && npm link ${packageName}`);
+    try {
+      await execAsync(`cd ${sourceDir} && npm link`);
+      await execAsync(`cd ${n8nCustomDir} && npm link ${packageName}`);
+
+      const linkedPath = path.join(n8nCustomDir, "node_modules", packageName);
+      if (!fs.existsSync(linkedPath)) {
+        throw new Error("npm link failed, falling back to copy");
+      }
+    } catch (linkError) {
+      console.warn(`npm link failed for ${node}, copying manually...`);
+
+      if (!fs.existsSync(path.join(n8nCustomDir, "node_modules"))) {
+        await execAsync(`mkdir -p ${path.join(n8nCustomDir, "node_modules")}`);
+      }
+
+      const targetPath = path.join(n8nCustomDir, "node_modules", packageName);
+      if (fs.existsSync(targetPath)) {
+        await execAsync(`rm -rf ${targetPath}`);
+      }
+
+      await execAsync(`cp -r ${sourceDir} ${targetPath}`);
+      await execAsync(`cd ${targetPath} && npm install`);
+    }
+
+    const finalPath = path.join(n8nCustomDir, "node_modules", packageName);
+    if (fs.existsSync(finalPath)) {
+      try {
+        await execAsync(`cd ${finalPath} && npm run build`);
+      } catch (buildError) {
+        console.warn(`Build failed for ${node}, but package is installed`);
+      }
+    }
+
+    await sleep(500);
   } catch (error) {
     console.error(`Error installing node ${node}:`, error);
     throw error;
