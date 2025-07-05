@@ -36,7 +36,8 @@
       "dist/credentials/HardhatCredentials.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/HardhatCompile.node.js"
+      "dist/nodes/HardhatCompile.node.js",
+      "dist/nodes/HardhatDeploy.node.js"
     ]
   },
   "devDependencies": {

@@ -28,6 +28,7 @@ export class ViemContract implements INodeType {
 				required: true,
 			},
 		],
+		icon: 'file:contract.svg',
 		usableAsTool: true,
 		codex: {
 			categories: ['Viem', 'Blockchain', 'Contract'],
