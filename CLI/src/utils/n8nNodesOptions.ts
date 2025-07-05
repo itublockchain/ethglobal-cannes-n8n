@@ -1,7 +1,5 @@
 export const n8nNodesOptions = [
-  { value: "The Graph", label: "The Graph" },
-  { value: "Walrus", label: "Walrus" },
-  { value: "Polymarket", label: "Polymarket" },
-  { value: "1inch", label: "1inch" },
-  { value: "Flare Network", label: "Flare Network" },
+  { value: "TheGraph", label: "The Graph" },
+  { value: "ENS", label: "ENS" },
+  { value: "Viem", label: "Viem" },
 ];

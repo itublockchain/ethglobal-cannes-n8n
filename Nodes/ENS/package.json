@@ -34,7 +34,8 @@
     "n8nNodesApiVersion": 1,
     "credentials": [],
     "nodes": [
-      "dist/nodes/ENS.node.js"
+      "dist/nodes/AddressToENS.node.js",
+      "dist/nodes/ENSToAddress.node.js"
     ]
   },
   "devDependencies": {

@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "types": ["node"],
     "declaration": true,
     "declarationDir": "./dist/types",
     "strict": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "baseUrl": ".",
     "rootDir": "./src",
+    "resolveJsonModule": true,
     "paths": {
       "test-clack-cannes": ["./src/index.ts"]
     }

@@ -36,7 +36,9 @@
       "dist/credentials/ViemCredentials.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ViemTransaction.node.js"
+      "dist/nodes/ViemTransaction.node.js",
+      "dist/nodes/ViemContract.node.js",
+      "dist/nodes/ViemGetChain.node.js"
     ]
   },
   "devDependencies": {
