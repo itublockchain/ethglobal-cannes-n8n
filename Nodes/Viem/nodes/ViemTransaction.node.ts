@@ -4,10 +4,11 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	NodeConnectionType,
+	NodeParameterValue,
 } from 'n8n-workflow';
 
 import { privateKeyToAccount } from 'viem/accounts';
-import { createPublicClient, createWalletClient, http, Chain } from 'viem';
+import { Chain, createPublicClient, createWalletClient, erc20Abi, http } from 'viem';
 import * as chains from 'viem/chains';
 
 export class ViemTransaction implements INodeType {
@@ -40,8 +41,8 @@ export class ViemTransaction implements INodeType {
 			{
 				displayName: 'Chain',
 				name: 'chain',
-				type: 'string',
-				default: 'Sepolia',
+				type: 'json',
+				default: chains.sepolia as unknown as NodeParameterValue,
 			},
 			{
 				displayName: 'Recipient Address',
@@ -59,6 +60,24 @@ export class ViemTransaction implements INodeType {
 				required: true,
 				description: 'Value in ETH',
 			},
+			{
+				displayName: 'Choose Token or Native Currency',
+				name: 'tokenOrNative',
+				type: 'options',
+				options: [
+					{ name: 'Token', value: 'token' },
+					{ name: 'Native Currency', value: 'native' },
+				],
+				default: 'native',
+				required: true,
+			},
+			{
+				displayName: 'ERC20 Token Address (Optional)',
+				name: 'tokenAddress',
+				type: 'string',
+				default: '',
+				required: false,
+			},
 		],
 	};
 
@@ -74,14 +93,10 @@ export class ViemTransaction implements INodeType {
 		for (let i = 0; i < items.length; i++) {
 			const to = this.getNodeParameter('recipientAddress', i) as string;
 			const value = this.getNodeParameter('value', i) as number;
+			const tokenOrNative = this.getNodeParameter('tokenOrNative', i) as string;
+			const tokenAddress = this.getNodeParameter('tokenAddress', i) as string;
 
-			const chainName = this.getNodeParameter('chain', i);
-
-			const chain = Object.values(chains).find((c: Chain) => c.name === chainName) as Chain;
-
-			if (!chain) {
-				throw new Error(`Chain ${chainName} not found`);
-			}
+			const chain = this.getNodeParameter('chain', i) as Chain;
 
 			const publicClient = createPublicClient({
 				chain,
@@ -94,25 +109,59 @@ export class ViemTransaction implements INodeType {
 				transport: http(chain.rpcUrls.default.http[0]),
 			});
 
-			const tx = await walletClient.sendTransaction({
-				account,
-				to: to as `0x${string}`,
-				value: BigInt(value * 10 ** 18),
-				chain,
-			});
+			switch (tokenOrNative) {
+				case 'token':
+					const balance = await publicClient.readContract({
+						address: tokenAddress as `0x${string}`,
+						abi: erc20Abi,
+						functionName: 'balanceOf',
+						args: [account.address],
+					});
 
-			const receipt = await publicClient.waitForTransactionReceipt({
-				hash: tx as `0x${string}`,
-			});
+					if (balance < BigInt(value * 10 ** 18)) {
+						throw new Error('Insufficient balance');
+					}
 
-			returnData.push({
-				json: {
-					tx,
-					receipt,
-					txHash: receipt.transactionHash,
-					chain,
-				},
-			});
+					const tx1 = await walletClient.writeContract({
+						abi: erc20Abi,
+						address: tokenAddress as `0x${string}`,
+						functionName: 'transfer',
+						args: [to as `0x${string}`, BigInt(value * 10 ** 18)],
+					});
+
+					const receipt1 = await publicClient.waitForTransactionReceipt({
+						hash: tx1 as `0x${string}`,
+					});
+
+					returnData.push({
+						json: {
+							tx: tx1,
+							receipt: receipt1,
+							txHash: receipt1.transactionHash,
+						},
+					});
+					break;
+				case 'native':
+					const tx2 = await walletClient.sendTransaction({
+						account,
+						to: to as `0x${string}`,
+						value: BigInt(value * 10 ** 18),
+					});
+
+					const receipt2 = await publicClient.waitForTransactionReceipt({
+						hash: tx2 as `0x${string}`,
+					});
+
+					returnData.push({
+						json: {
+							tx: tx2,
+							receipt: receipt2,
+							txHash: receipt2.transactionHash,
+							chain,
+						},
+					});
+					break;
+			}
 		}
 
 		return [returnData];
