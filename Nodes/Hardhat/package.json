@@ -1,6 +1,6 @@
 {
-  "name": "n8n-nodes-viem",
-  "version": "0.1.1",
+  "name": "n8n-nodes-hardhat",
+  "version": "0.1.0",
   "description": "",
   "keywords": [
     "n8n-community-node-package"
@@ -20,7 +20,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "npx rimraf dist && tsc && gulp build:icons",
+    "build": "npx rimraf dist && tsc && gulp build:icons && cp -r nodes/template dist/nodes/template",
     "dev": "tsc --watch",
     "format": "prettier nodes credentials --write",
     "lint": "eslint nodes credentials package.json",
@@ -33,16 +33,14 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ViemCredentials.credentials.js"
+      "dist/credentials/HardhatCredentials.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ViemTransaction.node.js",
-      "dist/nodes/ViemContract.node.js",
-      "dist/nodes/ViemGetChain.node.js",
-      "dist/nodes/ViemDeployContract.node.js"
+      "dist/nodes/HardhatCompile.node.js"
     ]
   },
   "devDependencies": {
+    "@types/node": "^24.0.10",
     "@typescript-eslint/parser": "~8.32.0",
     "eslint": "^8.57.0",
     "eslint-plugin-n8n-nodes-base": "^1.16.3",

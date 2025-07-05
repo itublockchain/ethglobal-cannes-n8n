@@ -65,8 +65,6 @@ export async function installNode(node: string) {
         console.warn(`Build failed for ${node}, but package is installed`);
       }
     }
-
-    await sleep(500);
   } catch (error) {
     console.error(`Error installing node ${node}:`, error);
     throw error;
