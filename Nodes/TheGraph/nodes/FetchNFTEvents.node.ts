@@ -109,7 +109,6 @@ export class FetchNFTEvents implements INodeType {
 					},
 				});
 				workflowStaticData.prevHash = _hash;
-				console.log('HASH CHANGED: ', prevHash, _hash);
 			}
 		}
 

@@ -1,48 +1,149 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-relay
 
-# n8n-nodes-starter
+This is an n8n community node. It lets you use Relay Protocol for cross-chain swaps and bridging in your n8n workflows.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+Relay Protocol enables instant, gas-free bridging and swapping across multiple blockchains. These nodes allow you to get quotes, execute swaps, and perform cross-chain operations seamlessly within n8n.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+[Installation](#installation)  
+[Operations](#operations)  
+[Credentials](#credentials)  
+[Compatibility](#compatibility)  
+[Usage](#usage)  
+[Resources](#resources)
 
-## Prerequisites
+## Installation
 
-You need the following installed on your development machine:
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+## Operations
 
-## Using this starter
+This node package supports the following operations:
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+### Relay: Get Quote
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+- **Cross-chain swap quotes** with real-time pricing
+- **Multi-chain support** across major networks
+- **Token-to-token** and **native currency** swaps
+- **Detailed cost breakdown** and routing information
+- **Recipient specification** for flexible workflows
 
-## More information
+**Input Parameters:**
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+```
+Input Chain: options (abstractTestnet, polygonAmoy, arbitrumSepolia, baseSepolia, sepolia, holesky, optimismSepolia)
+Output Chain: options (abstractTestnet, polygonAmoy, arbitrumSepolia, baseSepolia, sepolia, holesky, optimismSepolia)
+Input Currency Address: string (Token contract address or 0x0000... for native)
+Output Currency Address: string (Token contract address or 0x0000... for native)
+Amount: string (Amount in smallest unit - wei for ETH)
+Recipient Address: string (Wallet address to receive output tokens)
+```
 
-## License
+### Relay: Execute Swap
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+- **Execute cross-chain swaps** from quotes
+- **Progress tracking** with detailed status updates
+- **Transaction monitoring** and receipt handling
+- **Flexible execution** with wait/no-wait options
+- **Error handling** and retry mechanisms
+
+**Input Parameters:**
+
+```
+Quote Source: options (From Previous Node, Manual Input)
+Quote Data: string (Complete quote object JSON - only for Manual Input)
+Input Chain: options (abstractTestnet, polygonAmoy, arbitrumSepolia, baseSepolia, sepolia, holesky, optimismSepolia - only for Manual Input)
+Enable Progress Tracking: boolean (default: true)
+Wait for Completion: boolean (default: true)
+```
+
+### Relay: Complete Swap
+
+- **End-to-end swap execution** in one operation
+- **Quote generation and execution** combined
+- **Slippage protection** with configurable limits
+- **Quote-only mode** for price checking
+- **Automated approval** handling
+
+**Input Parameters:**
+
+```
+Input Chain: options (abstractTestnet, polygonAmoy, arbitrumSepolia, baseSepolia, sepolia, holesky, optimismSepolia)
+Output Chain: options (abstractTestnet, polygonAmoy, arbitrumSepolia, baseSepolia, sepolia, holesky, optimismSepolia)
+Input Token Address: string (Token contract address or 0x0000... for native)
+Output Token Address: string (Token contract address or 0x0000... for native)
+Amount: string (Amount in smallest unit - wei for ETH)
+Recipient Address: string (optional - defaults to wallet address)
+Quote Only: boolean (default: false)
+Max Slippage (%): number (default: 3)
+```
+
+## Credentials
+
+To use these nodes, you need Relay credentials:
+
+1. **Ethereum Wallet**: Create an Ethereum-compatible wallet
+2. **Private Key**: Get your wallet's private key
+3. **Relay Credentials**: Create Relay credentials in n8n with your private key
+
+⚠️ **Security Warning**: Never share your private key and store it securely.
+
+## Compatibility
+
+- **Minimum n8n version**: 1.82.0
+- **Node.js version**: 20.15 and above
+- **Supported Networks**:
+  - Ethereum Sepolia & Holesky
+  - Arbitrum Sepolia
+  - Base Sepolia
+  - Optimism Sepolia
+  - Polygon Amoy
+  - Abstract Testnet
+
+## Usage
+
+### Get Cross-Chain Swap Quote
+
+1. Add the Relay: Get Quote node
+2. Select input and output chains
+3. Enter token contract addresses (use 0x0000... for native tokens)
+4. Specify amount in smallest unit (wei)
+5. Set recipient address
+
+### Execute a Swap
+
+1. Connect Relay: Get Quote to Relay: Execute Swap
+2. Enable progress tracking for detailed updates
+3. Choose whether to wait for completion
+4. Monitor transaction status and receipts
+
+### Complete Swap in One Step
+
+1. Add the Relay: Complete Swap node
+2. Configure all swap parameters
+3. Set slippage tolerance (default: 3%)
+4. Use quote-only mode to check prices first
+5. Execute when ready
+
+### Best Practices
+
+- Always get a quote first to check feasibility
+- Use appropriate slippage settings (3-5% recommended)
+- Monitor gas costs across different chains
+- Test with small amounts first
+- Enable progress tracking for transparency
+
+### Example Workflow
+
+1. **Get Quote**: ETH on Sepolia → USDC on Polygon Amoy
+2. **Review Quote**: Check rates, fees, and routing
+3. **Execute Swap**: Process the cross-chain transaction
+4. **Monitor Progress**: Track execution status
+5. **Confirm Receipt**: Verify tokens received on destination
+
+## Resources
+
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- [Relay Protocol documentation](https://docs.relay.link/)
+- [Relay SDK documentation](https://docs.relay.link/sdk)

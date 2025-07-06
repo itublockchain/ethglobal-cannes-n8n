@@ -33,8 +33,6 @@ export async function installNode(node: string) {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
     const packageName = packageJson.name;
 
-    console.log(`Installing ${node} by copying manually...`);
-
     if (!fs.existsSync(path.join(n8nCustomDir, "node_modules"))) {
       await execAsync(`mkdir -p ${path.join(n8nCustomDir, "node_modules")}`);
     }

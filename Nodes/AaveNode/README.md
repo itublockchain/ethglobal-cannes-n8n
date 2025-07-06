@@ -1,48 +1,186 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-aave
 
-# n8n-nodes-starter
+This is an n8n community node. It lets you use Aave protocol for DeFi lending operations in your n8n workflows.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+Aave is a decentralized lending protocol that allows users to supply, borrow, and manage crypto assets across multiple blockchains. These nodes enable you to interact with Aave V3 protocol directly within n8n.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+## Nodes
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+- Aave: Supply Assets
 
-## Prerequisites
+```
+  Network: string
+  Asset Address: string
+  Amount: string
+  On Behalf Of: string
+  Referral Code: number
+  Simulation Only: boolean
+```
 
-You need the following installed on your development machine:
+- Aave: Borrow Assets
+- Aave: Repay Assets
+- Aave: Withdraw Assets
+- Aave: Status
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-## Using this starter
+[Installation](#installation)  
+[Operations](#operations)  
+[Credentials](#credentials)  
+[Compatibility](#compatibility)  
+[Usage](#usage)  
+[Resources](#resources)
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+## Installation
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-## More information
+## Operations
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+This node package supports the following Aave V3 operations:
 
-## License
+### Aave: Supply Assets
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+- **Deposit tokens** to earn interest
+- **Automatic approval** handling for ERC20 tokens
+- **Max amount** support for full balance deposits
+- **Health factor** monitoring
+- **Simulation mode** for testing without execution
+
+**Input Parameters:**
+
+```
+Network: options (mainnet, sepolia, polygon, arbitrum, base, optimism, avalanche)
+Asset Address: string (ERC20 token contract address)
+Amount: string (Amount to supply or "max" for full balance)
+On Behalf Of: string (optional - Address to supply on behalf of)
+Referral Code: number (default: 0)
+Simulation Only: boolean (default: false)
+```
+
+### Aave: Borrow Assets
+
+- **Variable and stable rate** borrowing
+- **Health factor** validation to prevent liquidation
+- **Borrowing capacity** checks
+- **Risk assessment** warnings
+- **Simulation mode** for safe testing
+
+**Input Parameters:**
+
+```
+Network: options (sepolia, polygon, arbitrum, base, optimism, avalanche)
+Asset Address: string (ERC20 token contract address to borrow)
+Amount: string (Amount to borrow in human readable format)
+Interest Rate Mode: options (Variable Rate, Stable Rate)
+On Behalf Of: string (optional - Address to borrow on behalf of)
+Referral Code: number (default: 0)
+Check Health Factor: boolean (default: true)
+Simulation Only: boolean (default: false)
+```
+
+### Aave: Repay Assets
+
+- **Full or partial** debt repayment
+- **Max amount** support for complete repayment
+- **Automatic approval** for repayment tokens
+- **Debt tracking** and balance updates
+
+**Input Parameters:**
+
+```
+Network: options (sepolia, polygon, arbitrum, base, optimism, avalanche)
+Asset Address: string (ERC20 token contract address to repay)
+Amount: string (Amount to repay or "max" for full repayment)
+```
+
+### Aave: Withdraw Assets
+
+- **Withdraw supplied assets** with interest
+- **Health factor** protection
+- **Max amount** support for full withdrawal
+- **Collateral safety** checks
+
+**Input Parameters:**
+
+```
+Network: options (sepolia, polygon, arbitrum, base, optimism, avalanche)
+Asset Address: string (ERC20 token contract address to withdraw)
+Amount: string (Amount to withdraw or "max" for full withdrawal)
+Check Health Factor: boolean (default: true)
+Simulation Only: boolean (default: false)
+```
+
+### Aave: Status
+
+- **Account health monitoring**
+- **Collateral and debt** overview
+- **Risk level assessment**
+- **Multi-network** support
+
+**Input Parameters:**
+
+```
+Network: options (ethereum-sepolia, arbitrum-sepolia, optimism-sepolia, base-sepolia)
+User Address: string (Ethereum address to check status for)
+Custom RPC URL: string (optional - Custom RPC endpoint)
+Timeout: number (default: 15000 - Request timeout in milliseconds)
+```
+
+## Credentials
+
+To use these nodes, you need Aave credentials:
+
+1. **Ethereum Wallet**: Create an Ethereum-compatible wallet
+2. **Private Key**: Get your wallet's private key
+3. **RPC URL** (optional): Custom RPC endpoint for better performance
+4. **Aave Credentials**: Create Aave credentials in n8n with your private key
+
+⚠️ **Security Warning**: Never share your private key and store it securely.
+
+## Compatibility
+
+- **Minimum n8n version**: 1.82.0
+- **Node.js version**: 20.15 and above
+- **Supported Networks**:
+  - Ethereum Mainnet & Sepolia
+  - Polygon, Arbitrum, Base, Optimism
+  - Avalanche
+
+## Usage
+
+### Supply Assets to Earn Interest
+
+1. Add the Aave: Supply Assets node
+2. Select your network
+3. Enter the token contract address (e.g., USDC, DAI)
+4. Specify amount or use "max" for full balance
+5. Enable simulation mode to test first
+
+### Borrow Against Collateral
+
+1. Add the Aave: Borrow Assets node
+2. Ensure you have supplied collateral first
+3. Select the asset to borrow
+4. Choose interest rate mode (Variable recommended)
+5. Monitor health factor to avoid liquidation
+
+### Monitor Your Position
+
+1. Add the Aave: Status node
+2. Enter your wallet address
+3. Check health factor and risk level
+4. Monitor collateral and debt ratios
+
+### Safety Tips
+
+- Always check health factor before borrowing/withdrawing
+- Use simulation mode to test operations
+- Monitor liquidation risk regularly
+- Keep health factor above 1.5 for safety
+
+## Resources
+
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- [Aave protocol documentation](https://docs.aave.com/)
+- [Aave V3 technical documentation](https://docs.aave.com/developers/)

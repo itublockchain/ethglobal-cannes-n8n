@@ -1,48 +1,153 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-thegraph
 
-# n8n-nodes-starter
+This is an n8n community node. It lets you use The Graph protocol for blockchain data indexing and querying in your n8n workflows.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+The Graph is a decentralized protocol for indexing and querying blockchain data. These nodes enable you to fetch NFT events, token transfers, wallet balances, and liquidity pool data across multiple blockchains.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+[Installation](#installation)  
+[Operations](#operations)  
+[Credentials](#credentials)  
+[Compatibility](#compatibility)  
+[Usage](#usage)  
+[Resources](#resources)
 
-## Prerequisites
+## Installation
 
-You need the following installed on your development machine:
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+## Operations
 
-## Using this starter
+This node package supports the following operations:
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+### The Graph: Fetch NFT Events
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+- **Monitor NFT activities** across multiple chains
+- **Real-time event tracking** with hash-based change detection
+- **Activity filtering** by contract address
+- **Historical data** access
 
-## More information
+**Input Parameters:**
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+```
+NFT Contract Address: string (NFT contract address to monitor)
+Chain: string (arbitrum-one, avalanche, base, bsc, mainnet, matic, optimism, unichain)
+```
 
-## License
+### The Graph: Fetch Token Events
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+- **Track token transfers** and transactions
+- **ERC20 token monitoring** across networks
+- **Transfer history** with pagination
+- **Change detection** to avoid duplicate processing
+
+**Input Parameters:**
+
+```
+Token Contract Address: string (ERC20 token contract address to monitor)
+Chain: string (arbitrum-one, avalanche, base, bsc, mainnet, matic, optimism, unichain)
+```
+
+### The Graph: Get Token Holders
+
+- **Analyze token distribution** across addresses
+- **Multi-network holder data** aggregation
+- **Top holders** ranking by balance
+- **Network-specific** holder breakdown
+
+**Input Parameters:**
+
+```
+Token Address: string (ERC20 token contract address to analyze)
+```
+
+### The Graph: Get Liquidity Pools
+
+- **Discover liquidity pools** for specific tokens
+- **Cross-chain pool data** aggregation
+- **Pool metadata** and statistics
+- **DEX integration** information
+
+**Input Parameters:**
+
+```
+Token Address: string (Token contract address to find pools for)
+```
+
+### The Graph: View Wallet Balances
+
+- **Multi-chain wallet analysis**
+- **Token balance tracking** across networks
+- **Portfolio overview** for any address
+- **Network-grouped** balance data
+
+**Input Parameters:**
+
+```
+EVM Address: string (Ethereum wallet address to analyze)
+```
+
+## Credentials
+
+To use these nodes, you need The Graph credentials:
+
+1. **The Graph Account**: Sign up at [The Graph Studio](https://thegraph.com/studio/)
+2. **API Key**: Generate an API key from your dashboard
+3. **API Token**: Create an access token for authentication
+4. **The Graph Credentials**: Add both API key and token to n8n credentials
+
+## Compatibility
+
+- **Minimum n8n version**: 1.82.0
+- **Node.js version**: 20.15 and above
+- **Supported Networks**:
+  - Ethereum Mainnet
+  - Arbitrum One
+  - Polygon (Matic)
+  - Optimism
+  - Base, BSC, Avalanche
+  - Unichain
+
+## Usage
+
+### Monitor NFT Collection Activity
+
+1. Add The Graph: Fetch NFT Events node
+2. Enter the NFT contract address
+3. Select the blockchain network
+4. The node will track new activities automatically
+
+### Track Token Transfers
+
+1. Add The Graph: Fetch Token Events node
+2. Specify the token contract address
+3. Choose the network
+4. Monitor real-time transfer events
+
+### Analyze Token Distribution
+
+1. Add The Graph: Get Token Holders node
+2. Enter the token address
+3. Get top holders across all supported networks
+4. Analyze distribution patterns
+
+### Find Liquidity Pools
+
+1. Add The Graph: Get Liquidity Pools node
+2. Specify the token address
+3. Discover available pools across DEXs
+4. Analyze liquidity distribution
+
+### Check Wallet Portfolio
+
+1. Add The Graph: View Wallet Balances node
+2. Enter the wallet address
+3. Get complete portfolio across all networks
+4. Monitor balance changes
+
+## Resources
+
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- [The Graph documentation](https://thegraph.com/docs/)
+- [The Graph Studio](https://thegraph.com/studio/)
