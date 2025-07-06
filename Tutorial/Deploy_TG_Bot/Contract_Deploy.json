@@ -1,0 +1,213 @@
+{
+  "name": "Contract Deploy",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}\n\nIf missing info, ask user.\n\nIf need contract code for ERC20, use it:\n// https://eips.ethereum.org/EIPS/eip-20\n// SPDX-License-Identifier: MIT\npragma solidity >=0.5.0 <0.8.0;\n\ninterface Token {\n\n    /// @param _owner The address from which the balance will be retrieved\n    /// @return balance the balance\n    function balanceOf(address _owner) external view returns (uint256 balance);\n\n    /// @notice send `_value` token to `_to` from `msg.sender`\n    /// @param _to The address of the recipient\n    /// @param _value The amount of token to be transferred\n    /// @return success Whether the transfer was successful or not\n    function transfer(address _to, uint256 _value)  external returns (bool success);\n\n    /// @notice send `_value` token to `_to` from `_from` on the condition it is approved by `_from`\n    /// @param _from The address of the sender\n    /// @param _to The address of the recipient\n    /// @param _value The amount of token to be transferred\n    /// @return success Whether the transfer was successful or not\n    function transferFrom(address _from, address _to, uint256 _value) external returns (bool success);\n\n    /// @notice `msg.sender` approves `_addr` to spend `_value` tokens\n    /// @param _spender The address of the account able to transfer the tokens\n    /// @param _value The amount of wei to be approved for transfer\n    /// @return success Whether the approval was successful or not\n    function approve(address _spender  , uint256 _value) external returns (bool success);\n\n    /// @param _owner The address of the account owning tokens\n    /// @param _spender The address of the account able to transfer the tokens\n    /// @return remaining Amount of remaining tokens allowed to spent\n    function allowance(address _owner, address _spender) external view returns (uint256 remaining);\n\n    event Transfer(address indexed _from, address indexed _to, uint256 _value);\n    event Approval(address indexed _owner, address indexed _spender, uint256 _value);\n}\n\ncontract Standard_Token is Token {\n    uint256 constant private MAX_UINT256 = 2**256 - 1;\n    mapping (address => uint256) public balances;\n    mapping (address => mapping (address => uint256)) public allowed;\n    uint256 public totalSupply;\n    /*\n    NOTE:\n    The following variables are OPTIONAL vanities. One does not have to include them.\n    They allow one to customise the token contract & in no way influences the core functionality.\n    Some wallets/interfaces might not even bother to look at this information.\n    */\n    string public name;                   //fancy name: eg Simon Bucks\n    uint8 public decimals;                //How many decimals to show.\n    string public symbol;                 //An identifier: eg SBX\n\n    constructor(uint256 _initialAmount, string memory _tokenName, uint8 _decimalUnits, string  memory _tokenSymbol) {\n        balances[msg.sender] = _initialAmount;               // Give the creator all initial tokens\n        totalSupply = _initialAmount;                        // Update total supply\n        name = _tokenName;                                   // Set the name for display purposes\n        decimals = _decimalUnits;                            // Amount of decimals for display purposes\n        symbol = _tokenSymbol;                               // Set the symbol for display purposes\n    }\n\n    function transfer(address _to, uint256 _value) public override returns (bool success) {\n        require(balances[msg.sender] >= _value, \"token balance is lower than the value requested\");\n        balances[msg.sender] -= _value;\n        balances[_to] += _value;\n        emit Transfer(msg.sender, _to, _value); //solhint-disable-line indent, no-unused-vars\n        return true;\n    }\n\n    function transferFrom(address _from, address _to, uint256 _value) public override returns (bool success) {\n        uint256 allowance = allowed[_from][msg.sender];\n        require(balances[_from] >= _value && allowance >= _value, \"token balance or allowance is lower than amount requested\");\n        balances[_to] += _value;\n        balances[_from] -= _value;\n        if (allowance < MAX_UINT256) {\n            allowed[_from][msg.sender] -= _value;\n        }\n        emit Transfer(_from, _to, _value); //solhint-disable-line indent, no-unused-vars\n        return true;\n    }\n\n    function balanceOf(address _owner) public override view returns (uint256 balance) {\n        return balances[_owner];\n    }\n\n    function approve(address _spender, uint256 _value) public override returns (bool success) {\n        allowed[msg.sender][_spender] = _value;\n        emit Approval(msg.sender, _spender, _value); //solhint-disable-line indent, no-unused-vars\n        return true;\n    }\n\n    function allowance(address _owner, address _spender) public override view returns (uint256 remaining) {\n        return allowed[_owner][_spender];\n    }\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        140,
+        -60
+      ],
+      "id": "70dfacf1-54a8-47c8-8cb1-32d5924f5f00",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        60,
+        120
+      ],
+      "id": "30e78f77-338e-4028-8b02-704733bcfab9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YpriA6bG7WiFFjgs",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        200,
+        180
+      ],
+      "id": "ece3d02e-f359-4438-ada0-dd1b8d762a18",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "This node allows you to deploy a contract from it's code.\n\nConstructor Arguments: [any,any,any...]",
+        "contractCode": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Contract_Code', `put contract code here`, 'string') }}",
+        "chainID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chain_ID', `put chain id here`, 'number') }}",
+        "constructorArguments": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Constructor_Arguments', `put args here as [any,any,any...]`, 'json') }}",
+        "contractName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Contract_Name', `ask user`, 'string') }}"
+      },
+      "type": "n8n-nodes-hardhat.hardhatDeployTool",
+      "typeVersion": 1,
+      "position": [
+        320,
+        120
+      ],
+      "id": "e7b0f46c-099d-468d-a0f1-164784b06320",
+      "name": "Hardhat: Deploy",
+      "credentials": {
+        "viemCredentials": {
+          "id": "9q1i7Wnzu6Qn213d",
+          "name": "Test Wallet Hesabım"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chainName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chain_Name__if_not_provided__chain_ID_is_required_', ``, 'string') }}",
+        "chainId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chain_ID__if_not_provided__chain_name_is_required_', ``, 'number') }}"
+      },
+      "type": "n8n-nodes-viem.viemGetChainTool",
+      "typeVersion": 1,
+      "position": [
+        440,
+        180
+      ],
+      "id": "7460bed1-e950-48e8-aeb7-5d37e1783e6c",
+      "name": "Viem: Get Chain"
+    },
+    {
+      "parameters": {
+        "chatId": "1662027035",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        -60
+      ],
+      "id": "03466e7a-064e-417c-98d4-0c6bd1f00dc2",
+      "name": "Send a text message",
+      "webhookId": "18f97b21-b78e-490b-9f59-8df8de2e67e3",
+      "credentials": {
+        "telegramApi": {
+          "id": "sdOqXEoUKHK0MC0c",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        -60
+      ],
+      "id": "38413b63-c6cc-48c9-97d7-9dca8b900c9a",
+      "name": "Telegram Trigger",
+      "webhookId": "86018e93-8563-4af9-a916-cfb5fcdfa56e",
+      "credentials": {
+        "telegramApi": {
+          "id": "sdOqXEoUKHK0MC0c",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hardhat: Deploy": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Viem: Get Chain": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0c977d41-ecf8-4679-8658-e257044248ae",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7a087da1092879730ab2cc20eaa18e7b895cba3d507a081afc29793d256de401"
+  },
+  "id": "yVQ4UZgQAAi2M37p",
+  "tags": []
+}
