@@ -50,7 +50,7 @@ export async function installNode(node: string) {
       try {
         await execAsync(`cd ${finalPath} && npm run build`);
       } catch (buildError) {
-        console.warn(`Build failed for ${node}, but package is installed`);
+        
       }
     }
   } catch (error) {
