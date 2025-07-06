@@ -158,6 +158,7 @@ export class AaveRepay implements INodeType {
 				required: true,
 			},
 		],
+		usableAsTool: true,
 		codex: {
 			categories: ['Aave', 'Blockchain', 'DeFi', 'Repay'],
 			alias: ['aave', 'blockchain', 'defi', 'repay'],

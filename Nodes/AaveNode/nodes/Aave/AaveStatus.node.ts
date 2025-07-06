@@ -60,6 +60,7 @@ export class AaveStatus implements INodeType {
 				required: false,
 			},
 		],
+		usableAsTool: true,
 		codex: {
 			categories: ['Aave', 'Blockchain', 'DeFi', 'Status'],
 			alias: ['aave', 'blockchain', 'defi', 'status'],

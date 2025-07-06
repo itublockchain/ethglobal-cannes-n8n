@@ -114,6 +114,7 @@ export class AaveBorrow implements INodeType {
 				required: true,
 			},
 		],
+		usableAsTool: true,
 		codex: {
 			categories: ['Aave', 'Blockchain', 'DeFi', 'Borrow'],
 			alias: ['aave', 'blockchain', 'defi', 'borrow'],

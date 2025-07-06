@@ -119,6 +119,7 @@ export class AaveSupply implements INodeType {
 				required: true,
 			},
 		],
+		usableAsTool: true,
 		codex: {
 			categories: ['Aave', 'Blockchain', 'DeFi', 'Supply'],
 			alias: ['aave', 'blockchain', 'defi', 'supply'],

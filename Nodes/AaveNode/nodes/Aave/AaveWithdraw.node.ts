@@ -158,6 +158,7 @@ export class AaveWithdraw implements INodeType {
 				required: true,
 			},
 		],
+		usableAsTool: true,
 		codex: {
 			categories: ['Aave', 'Blockchain', 'DeFi', 'Withdraw'],
 			alias: ['aave', 'blockchain', 'defi', 'withdraw'],
