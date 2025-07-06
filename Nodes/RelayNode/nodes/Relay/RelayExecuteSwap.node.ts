@@ -35,6 +35,7 @@ export class RelayExecuteSwap implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Relay: Execute Swap',
 		name: 'relayExecuteSwap',
+		icon: { light: 'file:relay.svg', dark: 'file:relay.svg' },
 		group: ['transform'],
 		version: 1,
 		description:

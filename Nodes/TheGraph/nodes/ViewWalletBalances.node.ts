@@ -21,6 +21,7 @@ export class ViewWalletBalances implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'The Graph: View Wallet Balances',
 		name: 'viewWalletBalances',
+		icon: { light: 'file:thegraph.svg', dark: 'file:thegraph.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'View Wallet Balances',

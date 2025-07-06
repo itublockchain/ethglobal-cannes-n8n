@@ -27,6 +27,7 @@ export class FetchNFTEvents implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'The Graph: Fetch NFT Events',
 		name: 'fetchNFTEvents',
+		icon: { light: 'file:thegraph.svg', dark: 'file:thegraph.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Fetch NFT Events using The Graph',

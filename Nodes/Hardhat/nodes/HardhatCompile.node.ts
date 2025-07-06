@@ -16,6 +16,7 @@ export class HardhatCompile implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Hardhat: Compile',
 		name: 'hardhatCompile',
+		icon: { light: 'file:hardhat.svg', dark: 'file:hardhat.svg' },
 		group: ['transform'],
 		version: 1,
 		description: "This node allows you to compile a contract from it's code.",

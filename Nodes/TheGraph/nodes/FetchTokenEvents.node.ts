@@ -27,6 +27,7 @@ export class FetchTokenEvents implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'The Graph: Fetch Token Events',
 		name: 'fetchTokenEvents',
+		icon: { light: 'file:thegraph.svg', dark: 'file:thegraph.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Fetch Token Events using The Graph',

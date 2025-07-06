@@ -45,6 +45,7 @@ export class AaveStatus implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Aave V3 Risk Status',
 		name: 'aaveV3RiskStatus',
+		icon: { light: 'file:aave.svg', dark: 'file:aave.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Get user health factor from Aave V3 protocol',

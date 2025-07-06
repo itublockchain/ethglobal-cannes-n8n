@@ -35,6 +35,7 @@ export class RelayGetQuote implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Relay: Get Quote',
 		name: 'relayGetQuote',
+		icon: { light: 'file:relay.svg', dark: 'file:relay.svg' },
 		group: ['transform'],
 		version: 1,
 		description:

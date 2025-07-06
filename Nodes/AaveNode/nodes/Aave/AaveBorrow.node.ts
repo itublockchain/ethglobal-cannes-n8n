@@ -99,6 +99,7 @@ export class AaveBorrow implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Aave: Borrow Assets',
 		name: 'aaveBorrow',
+		icon: { light: 'file:aave.svg', dark: 'file:aave.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Borrow assets from Aave V3 protocol',

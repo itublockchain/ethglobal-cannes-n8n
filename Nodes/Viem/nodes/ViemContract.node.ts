@@ -14,6 +14,7 @@ export class ViemContract implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Viem: Contract',
 		name: 'viemContract',
+		icon: { light: 'file:viem.svg', dark: 'file:viem.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'This node allows you to interact with a contract on a blockchain.',
@@ -28,7 +29,6 @@ export class ViemContract implements INodeType {
 				required: true,
 			},
 		],
-		icon: 'file:contract.svg',
 		usableAsTool: true,
 		codex: {
 			categories: ['Viem', 'Blockchain', 'Contract'],

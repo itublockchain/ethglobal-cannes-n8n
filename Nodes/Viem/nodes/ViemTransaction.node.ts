@@ -15,6 +15,7 @@ export class ViemTransaction implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Viem: Transaction',
 		name: 'viemTransaction',
+		icon: { light: 'file:viem.svg', dark: 'file:viem.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'This node allows you to send a transaction to a blockchain.',

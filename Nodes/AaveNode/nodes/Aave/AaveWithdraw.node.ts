@@ -143,6 +143,7 @@ export class AaveWithdraw implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Aave: Withdraw Assets',
 		name: 'aaveWithdraw',
+		icon: { light: 'file:aave.svg', dark: 'file:aave.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Withdraw (redeem) assets from Aave V3 protocol',

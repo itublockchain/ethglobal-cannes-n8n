@@ -13,6 +13,7 @@ export class AddressToENS implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'ENS: Get ENS from Address',
 		name: 'getENSFromAddress',
+		icon: { light: 'file:ens.svg', dark: 'file:ens.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Get ENS from Address',

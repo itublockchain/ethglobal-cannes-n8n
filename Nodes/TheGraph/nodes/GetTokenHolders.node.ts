@@ -21,6 +21,7 @@ export class GetTokenHolders implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'The Graph: Get Token Holders',
 		name: 'getTokenHolders',
+		icon: { light: 'file:thegraph.svg', dark: 'file:thegraph.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Get Token Holders',

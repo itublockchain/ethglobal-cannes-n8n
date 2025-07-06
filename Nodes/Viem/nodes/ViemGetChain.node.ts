@@ -13,6 +13,7 @@ export class ViemGetChain implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Viem: Get Chain',
 		name: 'viemGetChain',
+		icon: { light: 'file:viem.svg', dark: 'file:viem.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'This node allows you to get a chain from a chain ID or chain name.',

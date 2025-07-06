@@ -33,6 +33,7 @@ export class RelayCompleteSwap implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Relay: Complete Swap',
 		name: 'relayCompleteSwap',
+		icon: { light: 'file:relay.svg', dark: 'file:relay.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Complete cross-chain swap using Relay Protocol',

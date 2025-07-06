@@ -6,7 +6,14 @@ import {
 	NodeConnectionType,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { createPublicClient, createWalletClient, http, parseUnits, getContract, formatUnits } from 'viem';
+import {
+	createPublicClient,
+	createWalletClient,
+	http,
+	parseUnits,
+	getContract,
+	formatUnits,
+} from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet, sepolia, polygon, arbitrum, base, optimism, avalanche } from 'viem/chains';
 
@@ -21,9 +28,9 @@ const SUPPORTED_CHAINS = {
 };
 
 const POOL_ADDRESSES = {
-arbitrumSepolia:"",
-optimismSepolia:"",
-baseSepolia:"",
+	arbitrumSepolia: '',
+	optimismSepolia: '',
+	baseSepolia: '',
 	sepolia: '0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951',
 };
 
@@ -97,6 +104,7 @@ export class AaveSupply implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Aave: Supply Assets',
 		name: 'aaveSupply',
+		icon: { light: 'file:aave.svg', dark: 'file:aave.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Supply (deposit) assets to Aave V3 protocol to earn interest',
@@ -145,7 +153,8 @@ export class AaveSupply implements INodeType {
 				type: 'string',
 				default: '0',
 				required: true,
-				description: 'Amount to supply in human readable format (e.g., "100" for 100 USDC). Use "max" to supply your entire balance.',
+				description:
+					'Amount to supply in human readable format (e.g., "100" for 100 USDC). Use "max" to supply your entire balance.',
 			},
 			{
 				displayName: 'On Behalf Of',
@@ -257,7 +266,13 @@ export class AaveSupply implements INodeType {
 				if (balance < parsedAmount) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`Insufficient balance. Trying to supply ${formatUnits(parsedAmount, decimals)} ${tokenSymbol}, but wallet only has ${formatUnits(balance, decimals)} ${tokenSymbol}. Wallet address: ${account.address}`,
+						`Insufficient balance. Trying to supply ${formatUnits(
+							parsedAmount,
+							decimals,
+						)} ${tokenSymbol}, but wallet only has ${formatUnits(
+							balance,
+							decimals,
+						)} ${tokenSymbol}. Wallet address: ${account.address}`,
 					);
 				}
 
@@ -265,7 +280,10 @@ export class AaveSupply implements INodeType {
 				if (parsedAmount === 0n) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`Cannot supply 0 tokens. Current balance: ${formatUnits(balance, decimals)} ${tokenSymbol}`,
+						`Cannot supply 0 tokens. Current balance: ${formatUnits(
+							balance,
+							decimals,
+						)} ${tokenSymbol}`,
 					);
 				}
 

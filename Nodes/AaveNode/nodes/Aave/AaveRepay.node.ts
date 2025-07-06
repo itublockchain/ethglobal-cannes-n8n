@@ -143,6 +143,7 @@ export class AaveRepay implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Aave: Repay',
 		name: 'aaveRepay',
+		icon: { light: 'file:aave.svg', dark: 'file:aave.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Repay borrowed assets to Aave V3 protocol',

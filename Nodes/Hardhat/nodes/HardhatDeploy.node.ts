@@ -15,6 +15,7 @@ export class HardhatDeploy implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Hardhat: Deploy',
 		name: 'hardhatDeploy',
+		icon: { light: 'file:hardhat.svg', dark: 'file:hardhat.svg' },
 		group: ['transform'],
 		version: 1,
 		description: "This node allows you to deploy a contract from it's code.",
