@@ -33,7 +33,7 @@
 	"n8n": {
 		"n8nNodesApiVersion": 1,
 		"credentials": [
-			"dist/credentials/EulerCredentials.js"
+			"dist/credentials/Euler/EulerCredentials.credentials.js"
 		],
 		"nodes": [
 			"dist/nodes/Euler/EulerBorrower.node.js",
@@ -47,13 +47,13 @@
 		"gulp": "^4.0.2",
 		"n8n-workflow": "^1.0.0",
 		"prettier": "^2.7.1",
-		"typescript": "^4.8.4"
+		"typescript": "^5.0.4"
 	},
 	"peerDependencies": {
 		"n8n-workflow": "*"
 	},
 	"dependencies": {
-		"@eulerxyz/euler-sdk": "^1.0.0",
-		"viem": "^2.17.0"
+		"@eulerxyz/euler-sdk": "^0.2.16",
+		"viem": "^2.31.7"
 	}
 }
