@@ -4,4 +4,5 @@ export const n8nNodesOptions = [
   { value: "Viem", label: "Viem" },
   { value: "RelayNode", label: "Relay" },
   { value: "Hardhat", label: "Hardhat" },
+  { value: "AaveNode", label: "Aave" },
 ];

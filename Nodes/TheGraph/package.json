@@ -38,7 +38,9 @@
     "nodes": [
       "dist/nodes/ViewWalletBalances.node.js",
       "dist/nodes/GetTokenHolders.node.js",
-      "dist/nodes/GetLiquidityPools.node.js"
+      "dist/nodes/GetLiquidityPools.node.js",
+      "dist/nodes/FetchNFTEvents.node.js",
+      "dist/nodes/FetchTokenEvents.node.js"
     ]
   },
   "devDependencies": {

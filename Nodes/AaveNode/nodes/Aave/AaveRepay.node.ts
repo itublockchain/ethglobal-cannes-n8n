@@ -6,7 +6,14 @@ import {
 	NodeConnectionType,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { createPublicClient, createWalletClient, http, parseUnits, getContract, formatUnits } from 'viem';
+import {
+	createPublicClient,
+	createWalletClient,
+	http,
+	parseUnits,
+	getContract,
+	formatUnits,
+} from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet, sepolia, polygon, arbitrum, base, optimism, avalanche } from 'viem/chains';
 
@@ -21,9 +28,9 @@ const SUPPORTED_CHAINS = {
 };
 
 const POOL_ADDRESSES = {
-	arbitrumSepolia: "",
-	optimismSepolia: "",
-	baseSepolia: "",
+	arbitrumSepolia: '',
+	optimismSepolia: '',
+	baseSepolia: '',
 	sepolia: '0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951',
 };
 
@@ -150,6 +157,13 @@ export class AaveRepay implements INodeType {
 				required: true,
 			},
 		],
+		codex: {
+			categories: ['Aave', 'Blockchain', 'DeFi', 'Repay'],
+			alias: ['aave', 'blockchain', 'defi', 'repay'],
+			subcategories: {
+				aave: ['Aave', 'Blockchain', 'DeFi', 'Repay'],
+			},
+		},
 		properties: [
 			{
 				displayName: 'Network',
@@ -284,7 +298,10 @@ export class AaveRepay implements INodeType {
 				if (balance < parsedAmount) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`Insufficient balance. Need ${formatUnits(parsedAmount, decimals)} ${tokenSymbol}, but wallet has ${formatUnits(balance, decimals)} ${tokenSymbol}`,
+						`Insufficient balance. Need ${formatUnits(
+							parsedAmount,
+							decimals,
+						)} ${tokenSymbol}, but wallet has ${formatUnits(balance, decimals)} ${tokenSymbol}`,
 					);
 				}
 
@@ -292,7 +309,10 @@ export class AaveRepay implements INodeType {
 				if (parsedAmount === 0n) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`Cannot repay 0 tokens. Current debt: ${formatUnits(debtBalance, decimals)} ${tokenSymbol}`,
+						`Cannot repay 0 tokens. Current debt: ${formatUnits(
+							debtBalance,
+							decimals,
+						)} ${tokenSymbol}`,
 					);
 				}
 
@@ -316,9 +336,10 @@ export class AaveRepay implements INodeType {
 				}
 
 				// Execute repay transaction (use rate mode 2 for variable debt)
-				const repayAmount = amountInput.toLowerCase() === 'max'
-					? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-					: parsedAmount;
+				const repayAmount =
+					amountInput.toLowerCase() === 'max'
+						? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+						: parsedAmount;
 
 				const repayHash = await poolContract.write.repay([
 					assetAddress,
@@ -361,7 +382,6 @@ export class AaveRepay implements INodeType {
 				};
 
 				returnData.push({ json: result });
-
 			} catch (error: any) {
 				throw new NodeOperationError(
 					this.getNode(),

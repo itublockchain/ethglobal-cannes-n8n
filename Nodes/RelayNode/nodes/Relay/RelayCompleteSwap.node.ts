@@ -47,6 +47,13 @@ export class RelayCompleteSwap implements INodeType {
 				required: true,
 			},
 		],
+		codex: {
+			categories: ['Relay', 'Blockchain', 'DeFi', 'Complete Swap'],
+			alias: ['relay', 'blockchain', 'defi', 'complete', 'swap'],
+			subcategories: {
+				relay: ['Relay', 'Blockchain', 'DeFi', 'Complete Swap'],
+			},
+		},
 		properties: [
 			{
 				displayName: 'Input Chain',

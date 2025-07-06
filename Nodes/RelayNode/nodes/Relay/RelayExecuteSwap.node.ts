@@ -52,10 +52,10 @@ export class RelayExecuteSwap implements INodeType {
 		],
 		usableAsTool: true,
 		codex: {
-			categories: ['Blockchain', 'DeFi', 'Cross-chain'],
-			alias: ['relay', 'bridge', 'swap', 'cross-chain', 'defi', 'execute'],
+			categories: ['Relay', 'Blockchain', 'DeFi', 'Execute Swap'],
+			alias: ['relay', 'blockchain', 'defi', 'execute', 'swap'],
 			subcategories: {
-				blockchain: ['Bridge', 'Swap', 'DeFi'],
+				relay: ['Relay', 'Blockchain', 'DeFi', 'Execute Swap'],
 			},
 		},
 		properties: [

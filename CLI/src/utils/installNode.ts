@@ -33,29 +33,19 @@ export async function installNode(node: string) {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
     const packageName = packageJson.name;
 
-    try {
-      await execAsync(`cd ${sourceDir} && npm link`);
-      await execAsync(`cd ${n8nCustomDir} && npm link ${packageName}`);
+    console.log(`Installing ${node} by copying manually...`);
 
-      const linkedPath = path.join(n8nCustomDir, "node_modules", packageName);
-      if (!fs.existsSync(linkedPath)) {
-        throw new Error("npm link failed, falling back to copy");
-      }
-    } catch (linkError) {
-      console.warn(`npm link failed for ${node}, copying manually...`);
-
-      if (!fs.existsSync(path.join(n8nCustomDir, "node_modules"))) {
-        await execAsync(`mkdir -p ${path.join(n8nCustomDir, "node_modules")}`);
-      }
-
-      const targetPath = path.join(n8nCustomDir, "node_modules", packageName);
-      if (fs.existsSync(targetPath)) {
-        await execAsync(`rm -rf ${targetPath}`);
-      }
-
-      await execAsync(`cp -r ${sourceDir} ${targetPath}`);
-      await execAsync(`cd ${targetPath} && npm install`);
+    if (!fs.existsSync(path.join(n8nCustomDir, "node_modules"))) {
+      await execAsync(`mkdir -p ${path.join(n8nCustomDir, "node_modules")}`);
     }
+
+    const targetPath = path.join(n8nCustomDir, "node_modules", packageName);
+    if (fs.existsSync(targetPath)) {
+      await execAsync(`rm -rf ${targetPath}`);
+    }
+
+    await execAsync(`cp -r ${sourceDir} ${targetPath}`);
+    await execAsync(`cd ${targetPath} && npm install`);
 
     const finalPath = path.join(n8nCustomDir, "node_modules", packageName);
     if (fs.existsSync(finalPath)) {

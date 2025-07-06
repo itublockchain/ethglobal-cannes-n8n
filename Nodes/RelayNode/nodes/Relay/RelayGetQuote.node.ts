@@ -52,10 +52,10 @@ export class RelayGetQuote implements INodeType {
 		],
 		usableAsTool: true,
 		codex: {
-			categories: ['Blockchain', 'DeFi', 'Cross-chain'],
-			alias: ['relay', 'bridge', 'swap', 'cross-chain', 'defi'],
+			categories: ['Relay', 'Blockchain', 'DeFi', 'Get Quote'],
+			alias: ['relay', 'blockchain', 'defi', 'get', 'quote'],
 			subcategories: {
-				blockchain: ['Bridge', 'Swap', 'DeFi'],
+				relay: ['Relay', 'Blockchain', 'DeFi', 'Get Quote'],
 			},
 		},
 		properties: [
