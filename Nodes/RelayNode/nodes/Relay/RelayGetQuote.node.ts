@@ -7,29 +7,9 @@ import {
 	NodeOperationError,
 } from 'n8n-workflow';
 import { privateKeyToAccount } from 'viem/accounts';
-import { createWalletClient, http } from 'viem';
-import { getClient } from '@reservoir0x/relay-sdk';
-
-import {
-	holesky,
-	sepolia,
-	abstractTestnet,
-	arbitrumSepolia,
-	baseSepolia,
-	optimismSepolia,
-	polygonAmoy,
-} from 'viem/chains';
-
-// Define available testnet chains
-const SUPPORTED_CHAINS = {
-	abstractTestnet, // 11124
-	polygonAmoy, // 80002 (Amoy)
-	arbitrumSepolia, // 421614
-	baseSepolia, // 84532
-	sepolia, // 11155111
-	holesky, // 17000
-	optimismSepolia, // 11155420
-};
+import { Chain, createWalletClient, http } from 'viem';
+import { createClient, getClient } from '@reservoir0x/relay-sdk';
+import * as chains from 'viem/chains';
 
 export class RelayGetQuote implements INodeType {
 	description: INodeTypeDescription = {
@@ -63,24 +43,16 @@ export class RelayGetQuote implements INodeType {
 			{
 				displayName: 'Input Chain',
 				name: 'inputChain',
-				type: 'options',
-				options: Object.entries(SUPPORTED_CHAINS).map(([key, chain]) => ({
-					name: `${chain.name} (${key})`,
-					value: key,
-				})),
-				default: 'mainnet',
-				description: 'The blockchain network where the input token is located',
+				type: 'number',
+				default: 'sepolia',
+				description: 'Source blockchain network',
 			},
 			{
 				displayName: 'Output Chain',
 				name: 'outputChain',
-				type: 'options',
-				options: Object.entries(SUPPORTED_CHAINS).map(([key, chain]) => ({
-					name: `${chain.name} (${key})`,
-					value: key,
-				})),
-				default: 'mainnet',
-				description: 'The blockchain network where you want to receive the output token',
+				type: 'number',
+				default: 'polygonAmoy',
+				description: 'Destination blockchain network',
 			},
 			{
 				displayName: 'Input Currency Address',
@@ -121,6 +93,14 @@ export class RelayGetQuote implements INodeType {
 				placeholder: '0x...',
 				description: 'Wallet address that will receive the output tokens after the swap',
 			},
+			{
+				displayName: 'Is Testnet',
+				name: 'isTestnet',
+				type: 'boolean',
+				default: '',
+				required: false,
+				description: 'Is the network testnet',
+			},
 		],
 	};
 
@@ -151,12 +131,21 @@ export class RelayGetQuote implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
+				const isTestnet = this.getNodeParameter('isTestnet', i) as boolean;
+				const api = isTestnet ? "'https://api.testnet.relay.link'" : "'https://api.relay.link'";
+
 				const inputCurrencyAddress = this.getNodeParameter('inputCurrencyAddress', i) as string;
 				const outputCurrencyAddress = this.getNodeParameter('outputCurrencyAddress', i) as string;
 				const amount = this.getNodeParameter('amount', i) as string;
 				const recipientAddress = this.getNodeParameter('recipientAddress', i) as string;
-				const inputChainKey = this.getNodeParameter('inputChain', i) as string;
-				const outputChainKey = this.getNodeParameter('outputChain', i) as string;
+				const inputChainId = this.getNodeParameter('inputChain', i) as number;
+				const outputChainId = this.getNodeParameter('outputChain', i) as number;
+				const inputChain = Object.values(chains).find(
+					(chain: Chain) => chain.id === inputChainId,
+				) as Chain;
+				const outputChain = Object.values(chains).find(
+					(chain: Chain) => chain.id === outputChainId,
+				) as Chain;
 
 				// Validate inputs
 				if (!inputCurrencyAddress || !outputCurrencyAddress || !amount || !recipientAddress) {
@@ -166,19 +155,16 @@ export class RelayGetQuote implements INodeType {
 					);
 				}
 
-				const inputChain = SUPPORTED_CHAINS[inputChainKey as keyof typeof SUPPORTED_CHAINS];
-				const outputChain = SUPPORTED_CHAINS[outputChainKey as keyof typeof SUPPORTED_CHAINS];
-
 				if (!inputChain) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`Input chain ${inputChainKey} is not supported`,
+						`Input chain ${inputChainId} is not supported`,
 					);
 				}
 				if (!outputChain) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`Output chain ${outputChainKey} is not supported`,
+						`Output chain ${outputChainId} is not supported`,
 					);
 				}
 
@@ -193,6 +179,9 @@ export class RelayGetQuote implements INodeType {
 					transport: http(inputChain.rpcUrls.default.http[0]),
 				});
 
+				createClient({
+					baseApiUrl: api,
+				});
 				const relayClient = getClient();
 				if (!relayClient) {
 					throw new NodeOperationError(this.getNode(), 'Failed to initialize Relay client');

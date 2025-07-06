@@ -7,29 +7,9 @@ import {
 	NodeOperationError,
 } from 'n8n-workflow';
 import { privateKeyToAccount } from 'viem/accounts';
-import { createWalletClient, http } from 'viem';
-import { getClient } from '@reservoir0x/relay-sdk';
-
-import {
-	holesky,
-	sepolia,
-	abstractTestnet,
-	arbitrumSepolia,
-	baseSepolia,
-	optimismSepolia,
-	polygonAmoy,
-} from 'viem/chains';
-
-// Define available testnet chains
-const SUPPORTED_CHAINS = {
-	abstractTestnet, // 11124
-	polygonAmoy, // 80002 (Amoy)
-	arbitrumSepolia, // 421614
-	baseSepolia, // 84532
-	sepolia, // 11155111
-	holesky, // 17000
-	optimismSepolia, // 11155420
-};
+import { Chain, createWalletClient, http } from 'viem';
+import { createClient, getClient } from '@reservoir0x/relay-sdk';
+import * as chains from 'viem/chains';
 
 export class RelayExecuteSwap implements INodeType {
 	description: INodeTypeDescription = {
@@ -99,18 +79,9 @@ export class RelayExecuteSwap implements INodeType {
 			{
 				displayName: 'Input Chain',
 				name: 'inputChain',
-				type: 'options',
-				options: Object.entries(SUPPORTED_CHAINS).map(([key, chain]) => ({
-					name: `${chain.name} (${key})`,
-					value: key,
-				})),
-				default: 'mainnet',
-				description: 'The blockchain network where the input token is located',
-				displayOptions: {
-					show: {
-						quoteSource: ['manual'],
-					},
-				},
+				type: 'number',
+				default: 'sepolia',
+				description: 'Source blockchain network',
 			},
 			{
 				displayName: 'Enable Progress Tracking',
@@ -125,6 +96,14 @@ export class RelayExecuteSwap implements INodeType {
 				type: 'boolean',
 				default: true,
 				description: 'Whether to wait for the swap to complete before returning results',
+			},
+			{
+				displayName: 'Is Testnet',
+				name: 'isTestnet',
+				type: 'boolean',
+				default: true,
+				required: false,
+				description: 'Is the network testnet',
 			},
 		],
 	};
@@ -156,6 +135,9 @@ export class RelayExecuteSwap implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
+				const isTestnet = this.getNodeParameter('isTestnet', i) as boolean;
+				const api = isTestnet ? "'https://api.testnet.relay.link'" : "'https://api.relay.link'";
+
 				const quoteSource = this.getNodeParameter('quoteSource', i) as string;
 				const enableProgressTracking = this.getNodeParameter(
 					'enableProgressTracking',
@@ -173,18 +155,14 @@ export class RelayExecuteSwap implements INodeType {
 					// Extract chain info from metadata if available
 					if (quote.metadata?.inputChain) {
 						const chainName = quote.metadata.inputChain;
-						const chainKey = Object.entries(SUPPORTED_CHAINS).find(
-							([_, chain]) => chain.name === chainName,
-						)?.[0];
 
-						if (chainKey) {
-							inputChain = SUPPORTED_CHAINS[chainKey as keyof typeof SUPPORTED_CHAINS];
-						}
+						inputChain = Object.values(chains).find(
+							(chain: Chain) => chain.name === chainName,
+						) as Chain;
 					}
 				} else {
 					// Manual input
 					const quoteDataStr = this.getNodeParameter('quoteData', i) as string;
-					const inputChainKey = this.getNodeParameter('inputChain', i) as string;
 
 					try {
 						quote = JSON.parse(quoteDataStr);
@@ -195,7 +173,10 @@ export class RelayExecuteSwap implements INodeType {
 						);
 					}
 
-					inputChain = SUPPORTED_CHAINS[inputChainKey as keyof typeof SUPPORTED_CHAINS];
+					const inputChainId = this.getNodeParameter('inputChain', i) as number;
+					inputChain = Object.values(chains).find(
+						(chain: Chain) => chain.id === inputChainId,
+					) as Chain;
 				}
 
 				if (!quote) {
@@ -226,7 +207,11 @@ export class RelayExecuteSwap implements INodeType {
 					transport: http(inputChain.rpcUrls.default.http[0]),
 				});
 
+				createClient({
+					baseApiUrl: api,
+				});
 				const relayClient = getClient();
+
 				if (!relayClient) {
 					throw new NodeOperationError(this.getNode(), 'Failed to initialize Relay client');
 				}

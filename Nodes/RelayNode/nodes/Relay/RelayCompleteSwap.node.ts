@@ -90,6 +90,14 @@ export class RelayCompleteSwap implements INodeType {
 				default: 3,
 				description: 'Maximum slippage percentage',
 			},
+			{
+				displayName: 'Is Testnet',
+				name: 'isTestnet',
+				type: 'boolean',
+				default: true,
+				required: false,
+				description: 'Is the network testnet',
+			},
 		],
 	};
 
@@ -109,6 +117,9 @@ export class RelayCompleteSwap implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
+				const isTestnet = this.getNodeParameter('isTestnet', i) as boolean;
+				const api = isTestnet ? "'https://api.testnet.relay.link'" : "'https://api.relay.link'";
+
 				// Get parameters
 				const inputChainId = this.getNodeParameter('inputChain', i) as number;
 				const outputChainId = this.getNodeParameter('outputChain', i) as number;
@@ -142,7 +153,7 @@ export class RelayCompleteSwap implements INodeType {
 
 				// Initialize Relay client
 				createClient({
-					baseApiUrl: 'https://api.relay.link',
+					baseApiUrl: api,
 				});
 
 				const relayClient = getClient();
