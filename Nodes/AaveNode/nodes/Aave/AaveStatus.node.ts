@@ -59,6 +59,13 @@ export class AaveStatus implements INodeType {
 				required: false,
 			},
 		],
+		codex: {
+			categories: ['Aave', 'Blockchain', 'DeFi', 'Status'],
+			alias: ['aave', 'blockchain', 'defi', 'status'],
+			subcategories: {
+				aave: ['Aave', 'Blockchain', 'DeFi', 'Status'],
+			},
+		},
 		properties: [
 			{
 				displayName: 'Network',

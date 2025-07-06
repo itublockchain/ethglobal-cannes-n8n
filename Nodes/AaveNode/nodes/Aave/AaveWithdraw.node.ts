@@ -6,7 +6,14 @@ import {
 	NodeConnectionType,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { createPublicClient, createWalletClient, http, parseUnits, getContract, formatUnits } from 'viem';
+import {
+	createPublicClient,
+	createWalletClient,
+	http,
+	parseUnits,
+	getContract,
+	formatUnits,
+} from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet, sepolia, polygon, arbitrum, base, optimism, avalanche } from 'viem/chains';
 
@@ -21,9 +28,9 @@ const SUPPORTED_CHAINS = {
 };
 
 const POOL_ADDRESSES = {
-	arbitrumSepolia: "",
-	optimismSepolia: "",
-	baseSepolia: "",
+	arbitrumSepolia: '',
+	optimismSepolia: '',
+	baseSepolia: '',
 	sepolia: '0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951',
 };
 
@@ -150,6 +157,13 @@ export class AaveWithdraw implements INodeType {
 				required: true,
 			},
 		],
+		codex: {
+			categories: ['Aave', 'Blockchain', 'DeFi', 'Withdraw'],
+			alias: ['aave', 'blockchain', 'defi', 'withdraw'],
+			subcategories: {
+				aave: ['Aave', 'Blockchain', 'DeFi', 'Withdraw'],
+			},
+		},
 		properties: [
 			{
 				displayName: 'Network',
@@ -177,14 +191,16 @@ export class AaveWithdraw implements INodeType {
 				type: 'string',
 				default: '0',
 				required: true,
-				description: 'Amount to withdraw in human readable format (e.g., "100" for 100 USDC). Use "max" to withdraw your entire aToken balance.',
+				description:
+					'Amount to withdraw in human readable format (e.g., "100" for 100 USDC). Use "max" to withdraw your entire aToken balance.',
 			},
 			{
 				displayName: 'To Address',
 				name: 'toAddress',
 				type: 'string',
 				default: '',
-				description: 'Address to send withdrawn tokens to (leave empty to send to your own address)',
+				description:
+					'Address to send withdrawn tokens to (leave empty to send to your own address)',
 			},
 			{
 				displayName: 'Check Health Factor',
@@ -300,7 +316,13 @@ export class AaveWithdraw implements INodeType {
 				if (aTokenBalance < parsedAmount) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`Insufficient aToken balance. Trying to withdraw ${formatUnits(parsedAmount, decimals)} ${tokenSymbol}, but you only have ${formatUnits(aTokenBalance, decimals)} a${tokenSymbol} supplied. Wallet address: ${account.address}`,
+						`Insufficient aToken balance. Trying to withdraw ${formatUnits(
+							parsedAmount,
+							decimals,
+						)} ${tokenSymbol}, but you only have ${formatUnits(
+							aTokenBalance,
+							decimals,
+						)} a${tokenSymbol} supplied. Wallet address: ${account.address}`,
 					);
 				}
 
@@ -308,7 +330,10 @@ export class AaveWithdraw implements INodeType {
 				if (parsedAmount === 0n) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`Cannot withdraw 0 tokens. Current aToken balance: ${formatUnits(aTokenBalance, decimals)} a${tokenSymbol}`,
+						`Cannot withdraw 0 tokens. Current aToken balance: ${formatUnits(
+							aTokenBalance,
+							decimals,
+						)} a${tokenSymbol}`,
 					);
 				}
 
@@ -393,9 +418,10 @@ export class AaveWithdraw implements INodeType {
 				} else {
 					// Execute withdraw transaction
 					// Use type(uint256).max for max withdrawal, otherwise use parsed amount
-					const withdrawAmount = amountInput.toLowerCase() === 'max'
-						? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-						: parsedAmount;
+					const withdrawAmount =
+						amountInput.toLowerCase() === 'max'
+							? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+							: parsedAmount;
 
 					const withdrawHash = await poolContract.write.withdraw([
 						assetAddress,
@@ -416,7 +442,7 @@ export class AaveWithdraw implements INodeType {
 
 					// Get updated balances
 					const [newTokenBalance, newATokenBalance, updatedAccountData] = await Promise.all([
-						tokenContract.read.balanceOf([toAddress as `0x${string}` || account.address]),
+						tokenContract.read.balanceOf([(toAddress as `0x${string}`) || account.address]),
 						aTokenContract.read.balanceOf([account.address]),
 						poolContract.read.getUserAccountData([account.address]).catch(() => null),
 					]);
@@ -435,7 +461,10 @@ export class AaveWithdraw implements INodeType {
 						const [, , , , , newHealthFactor] = updatedAccountData;
 						result.updatedHealthFactor = formatUnits(newHealthFactor, 18);
 						result.healthFactorChange = result.accountData
-							? (parseFloat(formatUnits(newHealthFactor, 18)) - parseFloat(result.accountData.healthFactorFormatted)).toFixed(4)
+							? (
+									parseFloat(formatUnits(newHealthFactor, 18)) -
+									parseFloat(result.accountData.healthFactorFormatted)
+							  ).toFixed(4)
 							: 'N/A';
 					}
 				}
@@ -454,7 +483,6 @@ export class AaveWithdraw implements INodeType {
 
 		return [returnData];
 	}
-
 }
 
 // Helper function to assess risk level

@@ -6,7 +6,14 @@ import {
 	NodeConnectionType,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { createPublicClient, createWalletClient, http, parseUnits, getContract, formatUnits } from 'viem';
+import {
+	createPublicClient,
+	createWalletClient,
+	http,
+	parseUnits,
+	getContract,
+	formatUnits,
+} from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet, sepolia, polygon, arbitrum, base, optimism, avalanche } from 'viem/chains';
 
@@ -21,9 +28,9 @@ const SUPPORTED_CHAINS = {
 };
 
 const POOL_ADDRESSES = {
-	arbitrumSepolia: "",
-	optimismSepolia: "",
-	baseSepolia: "",
+	arbitrumSepolia: '',
+	optimismSepolia: '',
+	baseSepolia: '',
 	sepolia: '0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951',
 };
 
@@ -106,6 +113,13 @@ export class AaveBorrow implements INodeType {
 				required: true,
 			},
 		],
+		codex: {
+			categories: ['Aave', 'Blockchain', 'DeFi', 'Borrow'],
+			alias: ['aave', 'blockchain', 'defi', 'borrow'],
+			subcategories: {
+				aave: ['Aave', 'Blockchain', 'DeFi', 'Borrow'],
+			},
+		},
 		properties: [
 			{
 				displayName: 'Network',
@@ -257,10 +271,7 @@ export class AaveBorrow implements INodeType {
 
 				// If amount is 0, throw error
 				if (parsedAmount === 0n) {
-					throw new NodeOperationError(
-						this.getNode(),
-						`Cannot borrow 0 tokens.`,
-					);
+					throw new NodeOperationError(this.getNode(), `Cannot borrow 0 tokens.`);
 				}
 
 				const result: any = {
@@ -323,7 +334,10 @@ export class AaveBorrow implements INodeType {
 							);
 						}
 					} catch (error: any) {
-						if (error.message.includes('Health factor') || error.message.includes('borrowing capacity')) {
+						if (
+							error.message.includes('Health factor') ||
+							error.message.includes('borrowing capacity')
+						) {
 							throw error;
 						}
 						result.accountDataError = error.message;
@@ -342,7 +356,9 @@ export class AaveBorrow implements INodeType {
 							currentBalanceFormatted: formatUnits(currentBalance, decimals),
 							interestRateMode: interestRateMode === '1' ? 'Stable' : 'Variable',
 							estimatedGas: 'simulation_mode',
-							canBorrow: result.accountData ? result.accountData.availableBorrowsBase > 0n : 'unknown',
+							canBorrow: result.accountData
+								? result.accountData.availableBorrowsBase > 0n
+								: 'unknown',
 						};
 					} catch (error: any) {
 						result.simulation = {
@@ -384,7 +400,10 @@ export class AaveBorrow implements INodeType {
 						const [, , , , , newHealthFactor] = updatedAccountData;
 						result.updatedHealthFactor = formatUnits(newHealthFactor, 18);
 						result.healthFactorChange = result.accountData
-							? (parseFloat(formatUnits(newHealthFactor, 18)) - parseFloat(result.accountData.healthFactorFormatted)).toFixed(4)
+							? (
+									parseFloat(formatUnits(newHealthFactor, 18)) -
+									parseFloat(result.accountData.healthFactorFormatted)
+							  ).toFixed(4)
 							: 'N/A';
 					}
 				}
