@@ -109,7 +109,6 @@ export class FetchTokenEvents implements INodeType {
 					},
 				});
 				workflowStaticData.prevHashToken = _hash;
-				console.log('HASH CHANGED: ', prevHash, _hash);
 			}
 		}
 

@@ -1,5 +1,5 @@
 {
-  "name": "n8n-cli",
+  "name": "n3xus",
   "type": "module",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
@@ -25,7 +25,7 @@
     "ts-node": "^10.9.2"
   },
   "bin": {
-    "test-clack-cannes": "./dist/esm/index.js"
+    "n3xus": "./dist/esm/index.js"
   },
   "peerDependencies": {
     "typescript": "^5"

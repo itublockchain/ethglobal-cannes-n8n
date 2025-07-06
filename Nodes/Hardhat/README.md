@@ -1,48 +1,144 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-hardhat
 
-# n8n-nodes-starter
+This is an n8n community node. It lets you use Hardhat for smart contract compilation and deployment in your n8n workflows.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+Hardhat is a development environment for Ethereum that helps developers compile, deploy, test, and debug smart contracts. These nodes enable you to compile Solidity contracts and deploy them to any EVM-compatible blockchain directly from n8n.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+[Installation](#installation)  
+[Operations](#operations)  
+[Credentials](#credentials)  
+[Compatibility](#compatibility)  
+[Usage](#usage)  
+[Resources](#resources)
 
-## Prerequisites
+## Installation
 
-You need the following installed on your development machine:
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+## Operations
 
-## Using this starter
+This node package supports the following operations:
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+### Hardhat: Compile
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+- **Compile Solidity contracts** from source code
+- **Multi-contract support** in single compilation
+- **ABI and bytecode generation** for deployment
+- **Automatic dependency resolution**
+- **Error handling** with detailed compilation feedback
+- **Temporary project management** with cleanup
 
-## More information
+**Input Parameters:**
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+```
+Contract Code: string (Complete Solidity contract source code)
+```
 
-## License
+### Hardhat: Deploy
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+- **Deploy compiled contracts** to any EVM chain
+- **Constructor argument support** for complex contracts
+- **Multi-chain deployment** with automatic chain detection
+- **Transaction receipt tracking**
+- **Contract verification** data output
+- **Gas estimation** and optimization
+
+**Input Parameters:**
+
+```
+Contract Code: string (Complete Solidity contract source code)
+Chain ID: number (Target blockchain chain ID - e.g., 11155111 for Sepolia)
+Constructor Arguments: json (Array of constructor arguments)
+Contract Name: string (Name of the contract to deploy from compilation output)
+```
+
+## Credentials
+
+To use the deployment node, you need credentials:
+
+1. **Ethereum Wallet**: Create an Ethereum-compatible wallet
+2. **Private Key**: Get your wallet's private key
+3. **Viem Credentials**: Create Viem credentials in n8n with your private key
+
+⚠️ **Security Warning**: Never share your private key and store it securely.
+
+## Compatibility
+
+- **Minimum n8n version**: 1.82.0
+- **Node.js version**: 20.15 and above
+- **Solidity version**: 0.8.28 (configurable)
+- **Supported Networks**: All EVM-compatible blockchains
+
+## Usage
+
+### Compile a Smart Contract
+
+1. Add the Hardhat: Compile node
+2. Paste your Solidity contract code
+3. The node will automatically:
+   - Set up a temporary Hardhat project
+   - Install dependencies
+   - Compile the contract
+   - Return ABI and bytecode
+   - Clean up temporary files
+
+### Deploy a Compiled Contract
+
+1. Connect Hardhat: Compile to Hardhat: Deploy
+2. Specify the contract name to deploy
+3. Set the target chain ID
+4. Provide constructor arguments (if any)
+5. Execute to deploy and get transaction details
+
+### Example Workflow
+
+```solidity
+// Example contract code
+pragma solidity ^0.8.28;
+
+contract SimpleStorage {
+    uint256 public storedData;
+
+    constructor(uint256 _initialValue) {
+        storedData = _initialValue;
+    }
+
+    function set(uint256 _value) public {
+        storedData = _value;
+    }
+
+    function get() public view returns (uint256) {
+        return storedData;
+    }
+}
+```
+
+1. **Compile**: Paste the contract code into Hardhat: Compile
+2. **Deploy**: Use Hardhat: Deploy with:
+   - Contract Name: "SimpleStorage"
+   - Chain ID: 11155111 (Sepolia)
+   - Constructor Arguments: [42]
+
+### Advanced Features
+
+- **Multiple contracts** in one file are supported
+- **Import statements** work with standard libraries
+- **Complex constructor arguments** with arrays and structs
+- **Custom Hardhat configuration** through template modification
+- **Automatic cleanup** prevents disk space issues
+
+### Best Practices
+
+- Test contracts on testnets first
+- Use meaningful constructor arguments
+- Verify contract source code after deployment
+- Keep private keys secure
+- Monitor gas costs for deployment
+
+## Resources
+
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- [Hardhat documentation](https://hardhat.org/docs)
+- [Solidity documentation](https://docs.soliditylang.org/)

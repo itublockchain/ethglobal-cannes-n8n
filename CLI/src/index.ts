@@ -15,9 +15,7 @@ import { installNode, n8nNodesOptions } from "./utils";
 
 async function main() {
   console.clear();
-  intro(
-    color.blueBright(color.inverse(color.bold(" N8n Web3 Nodes Installer ")))
-  );
+  intro(color.blueBright(color.inverse(color.bold(" n3XUS CLI "))));
 
   const n8nNodes = await multiselect({
     message: color.greenBright(color.bold("Select n8n nodes to install")),
